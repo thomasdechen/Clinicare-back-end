@@ -1,4 +1,4 @@
-# ClinicareBack-end <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/2048px-Angular_full_color_logo.svg.png" width="60px" height="60px" alt="Logo do Angular">
+# ClinicareBack-end <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Spring_Framework_Logo_2018.svg/2560px-Spring_Framework_Logo_2018.svg.png" width="60px" height="60px" alt="Logo do Angular">
 
 Sistema web de uma clínica médica com a finalidade de estudar as seguintes tecnlogias: Angular 17+ e java spring.
 
