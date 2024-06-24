@@ -20,4 +20,10 @@ public class User {
     private String password;
     private String role;
     private String gender;
+
+    private String cpf;
+    private String telefone;
+    private String datanasc;
+    private String sangue;
+    private String foto;
 }

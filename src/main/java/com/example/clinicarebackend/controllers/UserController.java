@@ -53,6 +53,11 @@ public class UserController {
             user.setName(userProfile.getName());
             user.setEmail(userProfile.getEmail());
             user.setGender(userProfile.getGender());
+            user.setCpf(userProfile.getCpf());
+            user.setTelefone(userProfile.getTelefone());
+            user.setDatanasc(userProfile.getDatanasc());
+            user.setSangue(userProfile.getSangue());
+            user.setFoto(userProfile.getFoto());
             // Verifique se foi fornecida uma nova senha para atualização
             if (!userProfile.getPassword().isEmpty()) {
                 String encryptedPassword = passwordEncoder.encode(userProfile.getPassword());
@@ -63,4 +68,6 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+
+
 }
