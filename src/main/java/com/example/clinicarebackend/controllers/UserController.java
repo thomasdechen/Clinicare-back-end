@@ -1,13 +1,18 @@
 package com.example.clinicarebackend.controllers;
 
-import com.example.clinicarebackend.domain.user.User;
+import com.example.clinicarebackend.domain.medico.Medico;
+import com.example.clinicarebackend.domain.paciente.Paciente;
+import com.example.clinicarebackend.domain.secretario.Secretario;
+import com.example.clinicarebackend.repositories.MedicoRepository;
+import com.example.clinicarebackend.repositories.PacienteRepository;
+import com.example.clinicarebackend.repositories.SecretarioRepository;
 import com.example.clinicarebackend.repositories.UserRepository;
+import com.example.clinicarebackend.domain.user.User;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -19,11 +24,19 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Injete o PasswordEncoder aqui
+    private PacienteRepository pacienteRepository;
 
+    @Autowired
+    private MedicoRepository medicoRepository;
+
+    @Autowired
+    private SecretarioRepository secretarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfile(Authentication authentication) {
+    public ResponseEntity<?> getUserProfile(Authentication authentication) {
         String email = authentication.name();
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -35,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
-    public ResponseEntity<User> getUserProfileById(@PathVariable Long id) {
+    public ResponseEntity<?> getUserProfileById(@PathVariable Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -45,18 +58,45 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/paciente/{id}")
+    public ResponseEntity<?> getPacienteProfileById(@PathVariable Long id) {
+        Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
+        return pacienteOptional.map(paciente -> {
+            paciente.setPassword(""); // Não retornar a senha
+            return ResponseEntity.ok(paciente);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @GetMapping("/medico/{id}")
+    public ResponseEntity<?> getMedicoProfileById(@PathVariable Long id) {
+        Optional<Medico> medicoOptional = medicoRepository.findById(id);
+        return medicoOptional.map(medico -> {
+            medico.setPassword(""); // Não retornar a senha
+            return ResponseEntity.ok(medico);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/secretario/{id}")
+    public ResponseEntity<?> getSecretarioProfileById(@PathVariable Long id) {
+        Optional<Secretario> secretarioOptional = secretarioRepository.findById(id);
+        return secretarioOptional.map(secretario -> {
+            secretario.setPassword(""); // Não retornar a senha
+            return ResponseEntity.ok(secretario);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+
     @PutMapping("/profile/{id}")
-    public ResponseEntity<User> updateUserProfile(@PathVariable Long id, @RequestBody User userProfile) {
+    public ResponseEntity<?> updateUserProfile(@PathVariable Long id, @RequestBody User userProfile) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setName(userProfile.getName());
             user.setEmail(userProfile.getEmail());
             user.setGender(userProfile.getGender());
-            user.setCpf(userProfile.getCpf());
             user.setTelefone(userProfile.getTelefone());
             user.setDatanasc(userProfile.getDatanasc());
-            user.setSangue(userProfile.getSangue());
             user.setFoto(userProfile.getFoto());
             // Verifique se foi fornecida uma nova senha para atualização
             if (!userProfile.getPassword().isEmpty()) {
@@ -69,5 +109,77 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    // Exemplo de método para atualizar perfil de paciente
+    @PutMapping("/paciente/{id}")
+    public ResponseEntity<?> updatePacienteProfile(@PathVariable Long id, @RequestBody Paciente pacienteProfile) {
+        Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
+        if (pacienteOptional.isPresent()) {
+            Paciente paciente = pacienteOptional.get();
+            paciente.setName(pacienteProfile.getName());
+            paciente.setEmail(pacienteProfile.getEmail());
+            paciente.setGender(pacienteProfile.getGender());
+            paciente.setTelefone(pacienteProfile.getTelefone());
+            paciente.setDatanasc(pacienteProfile.getDatanasc());
+            paciente.setFoto(pacienteProfile.getFoto());
+            paciente.setCpf(pacienteProfile.getCpf());
+            paciente.setSangue(pacienteProfile.getSangue());
+            // Verifique se foi fornecida uma nova senha para atualização
+            if (!pacienteProfile.getPassword().isEmpty()) {
+                String encryptedPassword = passwordEncoder.encode(pacienteProfile.getPassword());
+                paciente.setPassword(encryptedPassword);
+            }
+            pacienteRepository.save(paciente);
+            return ResponseEntity.ok(paciente);
+        }
+        return ResponseEntity.notFound().build();
+    }
 
+    // Exemplo de método para atualizar perfil de médico
+    @PutMapping("/medico/{id}")
+    public ResponseEntity<?> updateMedicoProfile(@PathVariable Long id, @RequestBody Medico medicoProfile) {
+        Optional<Medico> medicoOptional = medicoRepository.findById(id);
+        if (medicoOptional.isPresent()) {
+            Medico medico = medicoOptional.get();
+            medico.setName(medicoProfile.getName());
+            medico.setEmail(medicoProfile.getEmail());
+            medico.setGender(medicoProfile.getGender());
+            medico.setTelefone(medicoProfile.getTelefone());
+            medico.setDatanasc(medicoProfile.getDatanasc());
+            medico.setFoto(medicoProfile.getFoto());
+            medico.setCrm(medicoProfile.getCrm());
+            medico.setEndereco(medicoProfile.getEndereco());
+            // Verifique se foi fornecida uma nova senha para atualização
+            if (!medicoProfile.getPassword().isEmpty()) {
+                String encryptedPassword = passwordEncoder.encode(medicoProfile.getPassword());
+                medico.setPassword(encryptedPassword);
+            }
+            medicoRepository.save(medico);
+            return ResponseEntity.ok(medico);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Exemplo de método para atualizar perfil de secretário
+    @PutMapping("/secretario/{id}")
+    public ResponseEntity<?> updateSecretarioProfile(@PathVariable Long id, @RequestBody Secretario secretarioProfile) {
+        Optional<Secretario> secretarioOptional = secretarioRepository.findById(id);
+        if (secretarioOptional.isPresent()) {
+            Secretario secretario = secretarioOptional.get();
+            secretario.setName(secretarioProfile.getName());
+            secretario.setEmail(secretarioProfile.getEmail());
+            secretario.setGender(secretarioProfile.getGender());
+            secretario.setTelefone(secretarioProfile.getTelefone());
+            secretario.setDatanasc(secretarioProfile.getDatanasc());
+            secretario.setFoto(secretarioProfile.getFoto());
+            secretario.setCpf(secretarioProfile.getCpf());
+            // Verifique se foi fornecida uma nova senha para atualização
+            if (!secretarioProfile.getPassword().isEmpty()) {
+                String encryptedPassword = passwordEncoder.encode(secretarioProfile.getPassword());
+                secretario.setPassword(encryptedPassword);
+            }
+            secretarioRepository.save(secretario);
+            return ResponseEntity.ok(secretario);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

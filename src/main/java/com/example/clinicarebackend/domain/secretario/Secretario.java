@@ -1,5 +1,6 @@
-package com.example.clinicarebackend.domain.user;
+package com.example.clinicarebackend.domain.secretario;
 
+import com.example.clinicarebackend.domain.user.IUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,24 +8,25 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "secretario")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements IUser {
-
+public class Secretario implements IUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("_id")
     private Long id;
-
     private String name;
     private String email;
     private String password;
     private String role;
     private String gender;
-    private String telefone;
     private String datanasc;
     private String foto;
+    private String telefone;
+    private String cpf;
+    private String medicocrm;
+    private Long medicoid;
 }

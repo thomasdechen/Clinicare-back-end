@@ -1,5 +1,6 @@
 package com.example.clinicarebackend.domain.codigosecretarioa;
 
+import com.example.clinicarebackend.domain.medico.Medico;
 import com.example.clinicarebackend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ public class CodigoSecretarioa {
 
     @ManyToOne
     @JoinColumn(name = "id_medico")
-    private User medico;
+    private Medico medico;
 
     @Column(unique = true)
     private Integer codigo;
