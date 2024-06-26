@@ -35,6 +35,50 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Método para deletar perfil de usuário genérico
+    @DeleteMapping("/profile/{id}")
+    public ResponseEntity<?> deleteUserProfile(@PathVariable Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            userRepository.delete(userOptional.get());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Método para deletar perfil de paciente
+    @DeleteMapping("/paciente/{id}")
+    public ResponseEntity<?> deletePacienteProfile(@PathVariable Long id) {
+        Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
+        if (pacienteOptional.isPresent()) {
+            pacienteRepository.delete(pacienteOptional.get());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Método para deletar perfil de médico
+    @DeleteMapping("/medico/{id}")
+    public ResponseEntity<?> deleteMedicoProfile(@PathVariable Long id) {
+        Optional<Medico> medicoOptional = medicoRepository.findById(id);
+        if (medicoOptional.isPresent()) {
+            medicoRepository.delete(medicoOptional.get());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Método para deletar perfil de secretário
+    @DeleteMapping("/secretario/{id}")
+    public ResponseEntity<?> deleteSecretarioProfile(@PathVariable Long id) {
+        Optional<Secretario> secretarioOptional = secretarioRepository.findById(id);
+        if (secretarioOptional.isPresent()) {
+            secretarioRepository.delete(secretarioOptional.get());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<?> getUserProfile(Authentication authentication) {
         String email = authentication.name();
