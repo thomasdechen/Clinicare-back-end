@@ -1,4 +1,4 @@
-package com.example.clinicarebackend.domain.secretario;
+package com.example.clinicarebackend.domain.servicos;
 
 import com.example.clinicarebackend.domain.user.IUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,28 +8,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "secretario")
+@Table(name = "servicos")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Secretario implements IUser {
+
+public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("_id")
     private Long id;
     private String name;
-    private String email;
-    private String password;
-    private String role;
-    private String gender;
-    private String datanasc;
-    private String foto;
-    private String telefone;
-    private String cpf;
-    private String medicocrm;
+    private String descricao;
+    private String name_medico;
     private Long medicoid;
+
 }

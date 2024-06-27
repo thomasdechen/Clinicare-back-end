@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/user/medico").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/secretario").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/user/secretario").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/servico/criar").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/servico/criar").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();

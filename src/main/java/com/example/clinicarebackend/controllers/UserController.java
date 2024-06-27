@@ -192,6 +192,7 @@ public class UserController {
             medico.setFoto(medicoProfile.getFoto());
             medico.setCrm(medicoProfile.getCrm());
             medico.setEndereco(medicoProfile.getEndereco());
+            medico.setEspecialidade(medicoProfile.getEspecialidade());
             // Verifique se foi fornecida uma nova senha para atualização
             if (!medicoProfile.getPassword().isEmpty()) {
                 String encryptedPassword = passwordEncoder.encode(medicoProfile.getPassword());

@@ -29,4 +29,5 @@ public class Medico implements IUser {
     private String telefone;
     private String crm;
     private String endereco;
+    private String especialidade;
 }
