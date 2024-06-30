@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -121,6 +122,15 @@ public class UserController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
+
+    @GetMapping("/medico")
+    public ResponseEntity<List<Medico>> getAllMedicos() {
+        List<Medico> medicos = medicoRepository.findAll();
+        medicos.forEach(medico -> medico.setPassword("")); // Não retornar a senha
+        return ResponseEntity.ok(medicos);
+    }
+
+
     @GetMapping("/secretario/{id}")
     public ResponseEntity<?> getSecretarioProfileById(@PathVariable Long id) {
         Optional<Secretario> secretarioOptional = secretarioRepository.findById(id);
@@ -178,7 +188,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // Exemplo de método para atualizar perfil de médico
     @PutMapping("/medico/{id}")
     public ResponseEntity<?> updateMedicoProfile(@PathVariable Long id, @RequestBody Medico medicoProfile) {
         Optional<Medico> medicoOptional = medicoRepository.findById(id);
