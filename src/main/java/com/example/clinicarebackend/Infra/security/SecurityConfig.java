@@ -34,6 +34,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/user/secretario").permitAll()
                         .requestMatchers(HttpMethod.GET, "/servico/criar").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/servico/criar").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/agendamento/criar").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/agendamento/criar").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/disponibilidade").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/disponibilidade").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();
