@@ -37,7 +37,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO body) {
-
         Optional<User> user = userRepository.findByEmail(body.email());
         if (user.isPresent() && passwordEncoder.matches(body.password(), user.get().getPassword())) {
             String token = tokenService.generateToken(user.get());
@@ -62,7 +61,7 @@ public class AuthController {
             return ResponseEntity.ok(new ResponseDTO(secretario.get().getId(), secretario.get().getName(), secretario.get().getRole(), token));
         }
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(new ErrorResponse("Credenciais inválidas"));
     }
 
     @PostMapping("/register")
@@ -70,7 +69,7 @@ public class AuthController {
         if (pacienteRepository.findByEmail(body.email()).isPresent() ||
                 medicoRepository.findByEmail(body.email()).isPresent() ||
                 secretarioRepository.findByEmail(body.email()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email já registrado.");
+            return ResponseEntity.badRequest().body(new ErrorResponse("Email já registrado."));
         }
 
         switch (body.role()) {
@@ -81,6 +80,7 @@ public class AuthController {
                 newPaciente.setName(body.name());
                 newPaciente.setRole(body.role());
                 newPaciente.setGender(body.gender());
+                newPaciente.setFoto(body.foto());
                 pacienteRepository.save(newPaciente);
                 String token = tokenService.generateToken(newPaciente);
                 return ResponseEntity.ok(new ResponseDTO(newPaciente.getId(), newPaciente.getName(), newPaciente.getRole(), token));
@@ -89,13 +89,13 @@ public class AuthController {
                 if (body.codigo() != null) {
                     Optional<CodigoMedicoa> codigoMedico = this.repositoryCodigoMedico.findByCodigo(body.codigo());
                     if (codigoMedico.isEmpty()) {
-                        return ResponseEntity.badRequest().body("Código inválido para médico.");
+                        return ResponseEntity.badRequest().body(new ErrorResponse("Código inválido para médico."));
                     }
                     if (codigoMedico.get().getMedico() != null) {
-                        return ResponseEntity.badRequest().body("Código já utilizado.");
+                        return ResponseEntity.badRequest().body(new ErrorResponse("Código já utilizado."));
                     }
                 } else {
-                    return ResponseEntity.badRequest().body("Código é obrigatório para médicos.");
+                    return ResponseEntity.badRequest().body(new ErrorResponse("Código é obrigatório para médicos."));
                 }
                 Medico newMedico = new Medico();
                 newMedico.setPassword(passwordEncoder.encode(body.password()));
@@ -103,6 +103,7 @@ public class AuthController {
                 newMedico.setName(body.name());
                 newMedico.setRole(body.role());
                 newMedico.setGender(body.gender());
+                newMedico.setFoto(body.foto());
                 medicoRepository.save(newMedico);
 
                 // Atualiza o código médico com o ID do novo médico e gera código de secretário
@@ -129,13 +130,13 @@ public class AuthController {
                 if (body.codigo() != null) {
                     codigoSecretario = this.repositoryCodigoSecretario.findByCodigo(body.codigo());
                     if (codigoSecretario.isEmpty()) {
-                        return ResponseEntity.badRequest().body("Código inválido para secretário.");
+                        return ResponseEntity.badRequest().body(new ErrorResponse("Código inválido para secretário."));
                     }
                     if (codigoSecretario.get().getMedico() == null) {
-                        return ResponseEntity.badRequest().body("Código de secretário não associado a nenhum médico.");
+                        return ResponseEntity.badRequest().body(new ErrorResponse("Código de secretário não associado a nenhum médico."));
                     }
                 } else {
-                    return ResponseEntity.badRequest().body("Código é obrigatório para secretários.");
+                    return ResponseEntity.badRequest().body(new ErrorResponse("Código é obrigatório para secretários."));
                 }
                 Secretario newSecretario = new Secretario();
                 newSecretario.setPassword(passwordEncoder.encode(body.password()));
@@ -143,6 +144,7 @@ public class AuthController {
                 newSecretario.setName(body.name());
                 newSecretario.setRole(body.role());
                 newSecretario.setGender(body.gender());
+                newSecretario.setFoto(body.foto());
                 // Define o ID do médico responsável no secretário
                 newSecretario.setMedicoid(codigoSecretario.get().getMedico().getId());
                 secretarioRepository.save(newSecretario);
@@ -150,7 +152,7 @@ public class AuthController {
                 return ResponseEntity.ok(new ResponseDTO(newSecretario.getId(), newSecretario.getName(), newSecretario.getRole(), token));
             }
             default -> {
-                return ResponseEntity.badRequest().body("Role inválido.");
+                return ResponseEntity.badRequest().body(new ErrorResponse("Role inválido."));
             }
         }
     }
@@ -162,5 +164,18 @@ public class AuthController {
             code = 10000 + random.nextInt(90000); // Gera um número de 5 dígitos
         } while (repositoryCodigoSecretario.findByCodigo(code).isPresent());
         return code;
+    }
+
+    // Classe interna para respostas de erro
+    private static class ErrorResponse {
+        private final String message;
+
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 }
