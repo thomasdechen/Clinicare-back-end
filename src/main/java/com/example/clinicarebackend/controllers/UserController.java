@@ -163,7 +163,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // Exemplo de método para atualizar perfil de paciente
     @PutMapping("/paciente/{id}")
     public ResponseEntity<?> updatePacienteProfile(@PathVariable Long id, @RequestBody Paciente pacienteProfile) {
         Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
@@ -177,13 +176,16 @@ public class UserController {
             paciente.setFoto(pacienteProfile.getFoto());
             paciente.setCpf(pacienteProfile.getCpf());
             paciente.setSangue(pacienteProfile.getSangue());
-            // Verifique se foi fornecida uma nova senha para atualização
-            if (!pacienteProfile.getPassword().isEmpty()) {
+
+            // Atualize a senha apenas se ela for fornecida
+            if (pacienteProfile.getPassword() != null && !pacienteProfile.getPassword().isEmpty()) {
                 String encryptedPassword = passwordEncoder.encode(pacienteProfile.getPassword());
                 paciente.setPassword(encryptedPassword);
             }
-            pacienteRepository.save(paciente);
-            return ResponseEntity.ok(paciente);
+
+            Paciente updatedPaciente = pacienteRepository.save(paciente);
+            updatedPaciente.setPassword(null); // Não retornar a senha
+            return ResponseEntity.ok(updatedPaciente);
         }
         return ResponseEntity.notFound().build();
     }
@@ -202,18 +204,17 @@ public class UserController {
             medico.setCrm(medicoProfile.getCrm());
             medico.setEndereco(medicoProfile.getEndereco());
             medico.setEspecialidade(medicoProfile.getEspecialidade());
-            // Verifique se foi fornecida uma nova senha para atualização
-            if (!medicoProfile.getPassword().isEmpty()) {
+            if (medicoProfile.getPassword() != null && !medicoProfile.getPassword().isEmpty()) {
                 String encryptedPassword = passwordEncoder.encode(medicoProfile.getPassword());
                 medico.setPassword(encryptedPassword);
             }
-            medicoRepository.save(medico);
-            return ResponseEntity.ok(medico);
+            Medico updatedMedico = medicoRepository.save(medico);
+            updatedMedico.setPassword(""); // Não retornar a senha
+            return ResponseEntity.ok(updatedMedico);
         }
         return ResponseEntity.notFound().build();
     }
 
-    // Exemplo de método para atualizar perfil de secretário
     @PutMapping("/secretario/{id}")
     public ResponseEntity<?> updateSecretarioProfile(@PathVariable Long id, @RequestBody Secretario secretarioProfile) {
         Optional<Secretario> secretarioOptional = secretarioRepository.findById(id);
@@ -226,13 +227,13 @@ public class UserController {
             secretario.setDatanasc(secretarioProfile.getDatanasc());
             secretario.setFoto(secretarioProfile.getFoto());
             secretario.setCpf(secretarioProfile.getCpf());
-            // Verifique se foi fornecida uma nova senha para atualização
-            if (!secretarioProfile.getPassword().isEmpty()) {
+            if (secretarioProfile.getPassword() != null && !secretarioProfile.getPassword().isEmpty()) {
                 String encryptedPassword = passwordEncoder.encode(secretarioProfile.getPassword());
                 secretario.setPassword(encryptedPassword);
             }
-            secretarioRepository.save(secretario);
-            return ResponseEntity.ok(secretario);
+            Secretario updatedSecretario = secretarioRepository.save(secretario);
+            updatedSecretario.setPassword(""); // Não retornar a senha
+            return ResponseEntity.ok(updatedSecretario);
         }
         return ResponseEntity.notFound().build();
     }

@@ -157,6 +157,16 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            String newToken = tokenService.generateToken(user.get());
+            return ResponseEntity.ok(new ResponseDTO(user.get().getId(), user.get().getName(), user.get().getRole(), newToken));
+        }
+        return ResponseEntity.badRequest().body(new ErrorResponse("Usuário não encontrado"));
+    }
+
     private int generateRandomCode() {
         Random random = new Random();
         int code;
