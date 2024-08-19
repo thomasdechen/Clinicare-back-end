@@ -26,6 +26,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/profile").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/user/profile").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/paciente").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/user/paciente").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/medico").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/user/medico").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/secretario").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/user/secretario").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/servico/criar").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/servico/criar").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/agendamento/criar").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/agendamento/criar").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/disponibilidade").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/disponibilidade").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();
