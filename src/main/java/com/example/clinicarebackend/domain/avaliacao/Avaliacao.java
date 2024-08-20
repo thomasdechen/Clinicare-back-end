@@ -27,6 +27,7 @@ public class Avaliacao {
     @Column(name = "paciente_name")
     private String namePaciente;
 
+
     private Integer estrelas;
 
     private String comentario;
