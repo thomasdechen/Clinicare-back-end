@@ -39,4 +39,30 @@ public class AvaliacaoController {
         boolean existeAvaliacao = avaliacaoRepository.existsByIdPacienteAndIdMedico(idPaciente, idMedico);
         return ResponseEntity.ok(existeAvaliacao);
     }
+
+    @PutMapping("/alterar/{id}")
+    public ResponseEntity<?> alterarAvaliacao(@PathVariable Long id, @RequestBody Avaliacao avaliacao) {
+        try {
+            Avaliacao existingAvaliacao = avaliacaoRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Avaliação não encontrada"));
+
+            existingAvaliacao.setEstrelas(avaliacao.getEstrelas());
+            existingAvaliacao.setComentario(avaliacao.getComentario());
+
+            Avaliacao updatedAvaliacao = avaliacaoRepository.save(existingAvaliacao);
+            return ResponseEntity.ok(updatedAvaliacao);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao alterar avaliação: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity<?> excluirAvaliacao(@PathVariable Long id) {
+        try {
+            avaliacaoRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao excluir avaliação: " + e.getMessage());
+        }
+    }
 }
