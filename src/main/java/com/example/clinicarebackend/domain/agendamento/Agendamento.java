@@ -21,20 +21,18 @@ public class Agendamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "id_medico")
+    private Long idMedico;
 
-    @ManyToOne
-    @JoinColumn(name = "id_medico", nullable = false)
-    private Medico medico;
 
-    @ManyToOne
-    @JoinColumn(name = "id_paciente", nullable = false)
-    private Paciente paciente;
+    @Column(name = "id_paciente")
+    private Long idPaciente;
 
     private LocalDate dia;
     private LocalTime hora;
     private String especialidadeMedico;
     private String local;
-    private String nomeMedico;
-    private double preco;
+    //private String nomeMedico;
+    //private double preco;
     private String status;
 }
