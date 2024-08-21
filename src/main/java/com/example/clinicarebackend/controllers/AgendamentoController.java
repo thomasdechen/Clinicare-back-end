@@ -43,5 +43,29 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentos);
     }
 
+    @PutMapping("/cancelar/{id}")
+    public ResponseEntity<String> cancelarAgendamento(@PathVariable Long id) {
+        try {
+            Agendamento agendamento = agendamentoRepository.findById(id).orElse(null);
+            if (agendamento == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Agendamento não encontrado");
+            }
+
+            // Verifica se o status já não é 'Cancelado'
+            if ("Cancelado".equals(agendamento.getStatus())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O agendamento já está cancelado");
+            }
+
+            agendamento.setStatus("Cancelado");
+            agendamentoRepository.save(agendamento);
+
+            return ResponseEntity.ok("Agendamento cancelado com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cancelar o agendamento: " + e.getMessage());
+        }
+    }
+
+
+
     // Outros métodos de endpoint, se necessário
 }
