@@ -21,9 +21,9 @@ public class Agendamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "id_medico")
     private Long idMedico;
-
 
     @Column(name = "id_paciente")
     private Long idPaciente;
@@ -32,7 +32,19 @@ public class Agendamento {
     private LocalTime hora;
     private String especialidadeMedico;
     private String local;
-    //private String nomeMedico;
-    //private double preco;
     private String status;
+    @Column(name = "preco", columnDefinition = "DECIMAL(10, 2) DEFAULT 100.00")
+    private BigDecimal preco;
+
+    @Column(name = "medico_telefone")
+    private String medicoTelefone;
+
+    @Column(name = "medico_nome")
+    private String medicoNome;
+
+    @Column(name = "paciente_nome")
+    private String pacienteNome;
+
+    @Column(name = "paciente_telefone")
+    private String pacienteTelefone;
 }

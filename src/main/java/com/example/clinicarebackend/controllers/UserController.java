@@ -1,12 +1,10 @@
 package com.example.clinicarebackend.controllers;
 
+import com.example.clinicarebackend.domain.agendamento.Agendamento;
 import com.example.clinicarebackend.domain.medico.Medico;
 import com.example.clinicarebackend.domain.paciente.Paciente;
 import com.example.clinicarebackend.domain.secretario.Secretario;
-import com.example.clinicarebackend.repositories.MedicoRepository;
-import com.example.clinicarebackend.repositories.PacienteRepository;
-import com.example.clinicarebackend.repositories.SecretarioRepository;
-import com.example.clinicarebackend.repositories.UserRepository;
+import com.example.clinicarebackend.repositories.*;
 import com.example.clinicarebackend.domain.user.User;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,9 @@ public class UserController {
 
     @Autowired
     private SecretarioRepository secretarioRepository;
+
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -78,6 +79,12 @@ public class UserController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/agendamento/paciente/{id}")
+    public ResponseEntity<List<Agendamento>> getAgendamentosDoPaciente(@PathVariable Long id) {
+        List<Agendamento> agendamentos = agendamentoRepository.findByIdPaciente(id);
+        return ResponseEntity.ok(agendamentos);
     }
 
     @GetMapping("/profile")
