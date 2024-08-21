@@ -1,6 +1,7 @@
 package com.example.clinicarebackend.controllers;
 
 import com.example.clinicarebackend.domain.agendamento.Agendamento;
+import com.example.clinicarebackend.domain.servicos.DisponibilidadeService;
 import com.example.clinicarebackend.repositories.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/agendamento")
 public class AgendamentoController {
+    @Autowired
+    private DisponibilidadeService disponibilidadeService;
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
@@ -18,6 +21,7 @@ public class AgendamentoController {
     public ResponseEntity<?> criarAgendamento2(@RequestBody Agendamento agendamento) {
         try {
             Agendamento savedAgendamento = agendamentoRepository.save(agendamento);
+            disponibilidadeService.atualizarDisponibilidadeAposAgendamento(agendamento);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedAgendamento);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao criar agendamento: " + e.getMessage());
