@@ -1,5 +1,6 @@
 package com.example.clinicarebackend.domain.servicos;
 
+import com.example.clinicarebackend.domain.agendamento.Agendamento;
 import com.example.clinicarebackend.domain.disponibilidade.Disponibilidade;
 import com.example.clinicarebackend.repositories.DisponibilidadeRepository;
 import com.example.clinicarebackend.repositories.MedicoRepository;
@@ -19,6 +20,16 @@ public class DisponibilidadeService {
 
     @Autowired
     private MedicoRepository medicoRepository;
+
+    public void atualizarDisponibilidadeAposAgendamento(Agendamento agendamento) {
+        LocalDate data = agendamento.getDia();
+        Long idMedico = agendamento.getIdMedico();
+        LocalTime hora = agendamento.getHora();
+
+        Disponibilidade disponibilidade = disponibilidadeRepository.findByMedicoIdAndDiaAndHoraInicio(idMedico, data, hora);
+        disponibilidade.setDisponivel(false);
+        disponibilidadeRepository.save(disponibilidade);
+    }
 
     public void verificarEAtualizarDisponibilidadePorMedico(Long medicoId) {
         LocalDate hoje = LocalDate.now();

@@ -5,6 +5,7 @@ import com.example.clinicarebackend.domain.medico.Medico;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface DisponibilidadeRepository extends JpaRepository<Disponibilidade, Long> {
@@ -18,4 +19,6 @@ public interface DisponibilidadeRepository extends JpaRepository<Disponibilidade
     boolean existsByMedicoIdAndDiaAndDisponivelFalse(Long medicoId, LocalDate data);
 
     boolean existsByMedicoIdAndDia(Long medicoId, LocalDate data);
+
+    Disponibilidade findByMedicoIdAndDiaAndHoraInicio(Long medicoId, LocalDate data, LocalTime horaInicio);
 }

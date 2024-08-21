@@ -1,7 +1,9 @@
 package com.example.clinicarebackend.controllers;
 
+import com.example.clinicarebackend.domain.agendamento.Agendamento;
 import com.example.clinicarebackend.domain.disponibilidade.Disponibilidade;
 import com.example.clinicarebackend.domain.servicos.DisponibilidadeService;
+import com.example.clinicarebackend.repositories.AgendamentoRepository;
 import com.example.clinicarebackend.repositories.DisponibilidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,32 +22,44 @@ public class DisponibilidadeController {
 
     @Autowired
     private DisponibilidadeService disponibilidadeService;
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
     @GetMapping("/medico/{id}/dias")
     public Set<String> getAvailableDates(@PathVariable Long id) {
         LocalDate hoje = LocalDate.now();
-        LocalDate limite = hoje.plusDays(45);
+        LocalDate limite = hoje.plusDays(30);
         List<Disponibilidade> disponibilidades = disponibilidadeRepository.findByMedicoIdAndDiaBetween(id, hoje, limite);
 
-        return disponibilidades.stream()
+        Set<LocalDate> diasDisponiveis = disponibilidades.stream()
                 .filter(Disponibilidade::isDisponivel)
-                .map(d -> d.getDia().toString())
+                .map(Disponibilidade::getDia)
                 .collect(Collectors.toSet());
-    }
 
-    @GetMapping("/medico/{id}/dia/{dia}")
-    public List<String> getAvailableTimes(@PathVariable Long id, @PathVariable String dia) {
-        LocalDate data = LocalDate.parse(dia);
-        List<Disponibilidade> disponibilidades = disponibilidadeRepository.findByMedicoIdAndDia(id, data);
-
-        return disponibilidades.stream()
-                .filter(Disponibilidade::isDisponivel)
-                .map(d -> d.getHoraInicio().toString())
-                .collect(Collectors.toList());
+        return diasDisponiveis.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toSet());
     }
 
     @PostMapping("/atualizar/{id}")
     public void atualizarDisponibilidade(@PathVariable Long id) {
         disponibilidadeService.verificarEAtualizarDisponibilidadePorMedico(id);
     }
+
+    @GetMapping("/medico/{id}/dia/{dia}")
+    public List<String> getAvailableTimes(@PathVariable Long id, @PathVariable String dia) {
+        LocalDate data = LocalDate.parse(dia);
+        List<Disponibilidade> disponibilidades = disponibilidadeRepository.findByMedicoIdAndDia(id, data);
+        List<Agendamento> agendamentos = agendamentoRepository.findByIdMedicoAndDia(id, data);
+
+        Set<String> horariosOcupados = agendamentos.stream()
+                .map(a -> a.getHora().toString())
+                .collect(Collectors.toSet());
+
+        return disponibilidades.stream()
+                .filter(d -> !horariosOcupados.contains(d.getHoraInicio().toString()) && d.isDisponivel())
+                .map(d -> d.getHoraInicio().toString())
+                .collect(Collectors.toList());
+    }
+
 }
